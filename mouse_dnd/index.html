@@ -7,19 +7,30 @@
 </head>
 
 <body>
-    <ui class="toolbar">
-            <li class="toolbar-item draggable">input</li>
-            <li class="toolbar-item draggable">button has <a href="http://github.com/thohoh">link</a></li>
-            <li class="toolbar-item draggable">file has input <input type="text" placeholder="typesomething"></li>
-            <li class="toolbar-item draggable">
-                dickfish
-                <div class="toolbar-item">select</li>
-            </li>
-            <li class="toolbar-item draggable">checkbox</li>
-        </ui>
+    <section class='section clearfix rounded'>
+            <p>Move elements between containers and sort them within one of the containers</p>
 
-    <div class='drop-zone droppable'> <div class='drop-zone droppable'> </div></div>
-    <div class='drop-zone droppable'> <div class='drop-zone droppable'> </div></div>
+            <div class="side-left column rounded">
+                    <ui class="list droppable">
+                            <li class="list-item draggable rounded">input</li>
+                            <li class="list-item draggable rounded">button has <a href="http://github.com/thohoh">link</a></li>
+                            <li class="list-item draggable rounded">file has input</li>
+                            <li class="list-item draggable rounded">
+                                <img src="http://lorempixel.com/100/100/" alt="">
+                            </li>
+                            <li class="list-item draggable rounded">checkbox</li>
+                    </ui>
+            </div>
+
+            <div class="side-right column rounded">
+                    <ui class="list droppable">
+                        <li class="list-item draggable rounded">
+                            <img src="http://lorempixel.com/100/100/" alt="">
+                        </li>
+                        <li class="list-item draggable rounded">checkbox</li>
+                    </ui>
+            </div>
+    </section>
 
     <script src="js/utils.js"></script>
     <script src="js/avatar.js"></script>

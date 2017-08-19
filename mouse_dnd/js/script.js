@@ -30,6 +30,7 @@ document.addEventListener('mousedown', e => {
     if (!draggableElem) { return; }
 
     e.stopPropagation();
+    e.preventDefault();
 
     dndService.dragElem = draggableElem;
     dndService.downX = e.pageX;
