@@ -9,7 +9,12 @@
     display: block;
     padding: 3px;
     border: 1px solid #000;
-    cursor: pointer;
+}
+
+.draggable {
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+    cursor: grab;
 }
 
 .drop-zone {
@@ -17,8 +22,4 @@
     min-height: 50px;
     border: 1px solid #000;
     margin: 50px;
-}
-
-.component {
-    border: 1px solid green;
 }
