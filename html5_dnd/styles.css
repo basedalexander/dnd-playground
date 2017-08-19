@@ -1,0 +1,30 @@
+.sortable-list {
+    width: 400px;
+    padding: 10px;
+    list-style-type: none;
+    border: 1px solid #000;
+    background: #fff;
+    color: #000;
+}
+.sortable-list__item {
+    padding: 2px;
+    background: #fff;
+    border: 1px solid #ccc;
+    margin: 5px 0;
+}
+
+/* Container specific styles */
+.drop-available {
+    background-color: #CBF1CB;
+}
+.drop-forbidden {
+    background-color: #ECB1B1;
+}
+.state-being-dragged {
+    color: #fff !important;
+    background-color: #9E9292 !important;
+}
+
+.drag-preview {
+    opacity: .2;
+}

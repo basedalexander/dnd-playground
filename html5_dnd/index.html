@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+	<ul drop-container class='sortable-list'>
+		<li draggable="true" class="sortable-list__item">1 ipsum dolor sit amet consectetur adipisicing elit. Fuga, fugit.</li>
+		<li draggable="true" class="sortable-list__item">2 ipsum dolor sit amet consectetur adipisicing elit. Fuga, fugit.</li>
+		<li draggable="true" class="sortable-list__item">3 ipsum dolor sit amet consectetur adipisicing elit. Fuga, fugit.</li>
+		<li draggable="true" class="sortable-list__item">
+				<ul drop-container class='sortable-list'>
+						<li draggable="true" class="sortable-list__item">6 ipsum dolor sit amet consectetur adipisicing elit. Fuga, fugit.</li>
+						<li draggable="true" class="sortable-list__item">7 ipsum dolor sit amet consectetur adipisicing elit. Fuga, fugit.</li>
+						<li draggable="true" class="sortable-list__item">8 ipsum dolor sit amet consectetur adipisicing elit. Fuga, fugit.</li>
+						<li draggable="true" class="sortable-list__item">9 ipsum dolor sit amet consectetur adipisicing elit. Fuga, fugit.</li>
+						<li draggable="true" class="sortable-list__item">10 ipsum dolor sit amet consectetur adipisicing elit. Fuga, fugit.</li>
+				</ul>
+		</li>
+		<li draggable="true" class="sortable-list__item">4 ipsum dolor sit amet consectetur adipisicing elit. Fuga, fugit.</li>
+		<li draggable="true" class="sortable-list__item">5 ipsum dolor sit amet consectetur adipisicing elit. Fuga, fugit.</li>
+	</ul>
+
+	<ul drop-container class='sortable-list'>
+			<li draggable="true" class="sortable-list__item">11 ipsum dolor sit amet consectetur adipisicing elit. Fuga, fugit.</li>
+			<li draggable="true" class="sortable-list__item">10 ipsum dolor sit amet consectetur adipisicing elit. Fuga, fugit.</li>
+			<li draggable="true" class="sortable-list__item">12 ipsum dolor sit amet consectetur adipisicing elit. Fuga, fugit.</li>
+			<li draggable="true" class="sortable-list__item">13 ipsum dolor sit amet consectetur adipisicing elit. Fuga, fugit.</li>
+			<li draggable="true" class="sortable-list__item">14 ipsum dolor sit amet consectetur adipisicing elit. Fuga, fugit.</li>
+	</ul>
+
+	<script src='dragdrop.js'></script>
+	<script src='script.js'></script>
+</body>
+</html>
