@@ -1,0 +1,27 @@
+{
+  "name": "sandbox_events",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "start": "cd lib && concurrently \"webpack\" \"cd ../ && node open\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thohoh/dnd-playground.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thohoh/dnd-playground/issues"
+  },
+  "homepage": "https://github.com/thohoh/dnd-playground#readme",
+  "devDependencies": {
+    "concurrently": "^3.5.0",
+    "open": "0.0.5"
+  }
+}
