@@ -66,9 +66,16 @@ function moveAvatar(e) {
 }
 
 function processMouseOver(e) {
+
+    // Outside the browser window
+    if (e.target === document) {
+        return;
+    }
+
     if (e.target === dndService.dropPreview) {
         return;
     }
+
     let droppable = e.target.closest(string2CssSelector(CLASSES.DROPPABLE));
 
     if (!droppable) {
@@ -149,5 +156,10 @@ function removeDropPreview() {
 }
 function findDroppable(e) {
     let element = document.elementFromPoint(e.clientX, e.clientY);
+    
+    if (!element) {
+        return element; // Drop occured outside of browser window
+    }
+
     return element.closest(string2CssSelector(CLASSES.DROPPABLE));
 }
