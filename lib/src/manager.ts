@@ -3,11 +3,14 @@ import { CLASSES, MOUSE_LEFT_CODE } from './constants';
 import { DndService } from "./dnd-service";
 import { IDragZoneFactory } from "./drag-zone/drag-zone-factory";
 import { DragZone } from "./drag-zone/drag-zone";
+import { Avatar } from "./avatar";
 
 export class Manager {
 
     private dragging: boolean = false;
     private dragZone: DragZone;
+    private avatar: Avatar;
+    private dragData: any;
 
     constructor(
         private dndService: DndService,
@@ -51,6 +54,24 @@ export class Manager {
         if (!this.dndService.downElem) { return; }
 
         if (this.isUnintendedDrag(event)) { return; }
+
+        this.dragging = true;
+
+        this.dragZone = this.dragZoneFactory.create(this.dndService.downElem);
+        this.dragZone.showBeingDragged();
+
+        // ask user for custom avatar
+        this.avatar = new Avatar(this.dndService.downElem);
+        // ask user for custom data
+        this.dragData = {};
+
+        this.avatar.move(event.pageX, event.pageY);
+
+        // if dropZone already exists or doesn't
+        let dropElem: Element = this.findDropElement(event.target);
+        if (dropElem) {
+            this.dropZone = new DropZone(dropElem);
+        }
 
         // create dragzone
         // create avatar

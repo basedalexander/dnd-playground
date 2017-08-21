@@ -1,8 +1,8 @@
 export class DragZone {
     private draggedElement: HTMLElement;
 
-    constructor(draggedElement: HTMLElement) {
-        this.draggedElement = draggedElement;
+    constructor(draggedElement: Element) {
+        this.draggedElement = <HTMLElement>draggedElement;
     }
 
     public showBeingDragged(): void {
