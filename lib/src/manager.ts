@@ -82,6 +82,15 @@ export class Manager {
     }
 
     private onMouseUp(event: MouseEvent) {
-        
+        if (this.dragZone) {
+            // drop
+            // remove avatar
+            // remove drag zone
+            // ...
+        } 
+        else {
+            // dragzone rollback
+            // dragavatar remove
+        }
     }
 }
