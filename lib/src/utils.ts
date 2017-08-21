@@ -1,3 +1,3 @@
-export function string2CssSelector(string) {
-    return `.${string}`;
+export let class2Selector = function(str: string): string {
+    return `.${str}`;
 }

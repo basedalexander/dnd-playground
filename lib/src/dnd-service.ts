@@ -1,14 +1,11 @@
-export let dndService = {
-    avatar: null,
-    dropPreview: null,
-    dragElem: null,
-    downX: null,
-    downY: null,
-    reset() {
-        this.avatar = null;
-        this.dragElem = null;
+export class DndService {
+    downElem: Element;
+    downX: number;
+    downY: number;
+
+    public reset(): void {
+        this.downElem = null;
         this.downX = null;
         this.downY = null;
-        this.dropPreview = null;
     }
-};
+}

@@ -1,4 +1,10 @@
 import { Manager } from './manager';
-import { dndService } from './dnd-service';
+import { DndService } from "./dnd-service";
+import { dragZoneFactory } from "./drag-zone/drag-zone-factory";
 
-let manager = new Manager(dndService);
+let dndService = new DndService();
+
+let manager = new Manager(
+    dndService,
+    dragZoneFactory
+);
