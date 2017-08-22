@@ -4,6 +4,7 @@ import { DndService } from "./dnd-service";
 import { IDragZoneFactory } from "./drag-zone/drag-zone-factory";
 import { DragZone } from "./drag-zone/drag-zone";
 import { Avatar } from "./avatar";
+import { DropZone } from "./drop-zone";
 
 export class Manager {
 
@@ -11,6 +12,10 @@ export class Manager {
     private dragZone: DragZone;
     private avatar: Avatar;
     private dragData: any;
+    private dropZone: DropZone;
+
+    // settings
+    private rememberLastDropShadow: boolean = true;
 
     constructor(
         private dndService: DndService,
@@ -52,54 +57,57 @@ export class Manager {
         }
 
         if (!this.dndService.downElem) { return; }
-
         if (this.isUnintendedDrag(event)) { return; }
 
+        this.startDragging(event);
+        this.continueDragging(event);
+    }
+
+    startDragging(event: MouseEvent): void {
         this.dragging = true;
-
         this.dragZone = this.dragZoneFactory.create(this.dndService.downElem);
-        this.dragZone.showBeingDragged();
+        this.avatar = new Avatar(this.dndService.downElem); // todo request from user
+        this.dragData = {}; // todo request from user
+    }
 
-        // ask user for custom avatar
-        this.avatar = new Avatar(this.dndService.downElem);
-        // ask user for custom data
-        this.dragData = {};
-
+    private continueDragging(event: MouseEvent): void {
         this.avatar.move(event.pageX, event.pageY);
-
-        // if dropZone already exists or doesn't
-        let dropElem: Element = this.findDropElement(event.target);
+        
+        let dropElem: Element = this.findDropElement(<Element>event.target);
+        
         if (dropElem) {
-            this.dropZone = new DropZone(dropElem);
+            this.dropZone = this.dropZone || new DropZone(dropElem);
+            this.dropZone.showShadow(event, this.dragZone.getDraggedElement());
+            this.dragZone.hideDraggedElement();
+        } else {
+            this.onOverOutsideOfDropZone();
         }
+    }
 
-        // create dragzone
-        // create avatar
-        // create data
-        // move avatar
-        // look for dragzone
+    private onOverOutsideOfDropZone(): void {
+        this.dragZone.showDraggedElement();
+
+        if (this.rememberLastDropShadow) {
+            // do nothing
+        } else {
+            if (this.dropZone) {
+                this.dropZone.kill();
+                this.dropZone = null;
+            }
+        }
+    }
+
+    private findDropElement(startFromElem: Element): Element {
+        return startFromElem.closest('.droppable');
     }
 
     private isUnintendedDrag(event: MouseEvent): boolean {
         const limit = 2;
         
-            let xDiff = Math.abs(this.dndService.downX - event.pageX);
-            if (xDiff > 3) {
-                return true;
-            }
+        let xDiff = Math.abs(this.dndService.downX - event.pageX);
+        let yDiff = Math.abs(this.dndService.downY - event.pageY);
         
-            let yDiff = Math.abs(this.dndService.downY - event.pageY);
-            if (yDiff > 3) {
-                return true;
-            }
-        
-            return false;
-    }
-
-    private continueDragging(e: MouseEvent): void {
-        // move avatar
-        // look for drag zone
-        // indicate drop zone if needed
+        return (xDiff <= limit) && (yDiff <= limit);
     }
 
     private onMouseUp(event: MouseEvent) {

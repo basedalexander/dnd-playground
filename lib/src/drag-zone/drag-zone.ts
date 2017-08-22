@@ -3,6 +3,7 @@ export class DragZone {
 
     constructor(draggedElement: Element) {
         this.draggedElement = <HTMLElement>draggedElement;
+        this.showBeingDragged();
     }
 
     public showBeingDragged(): void {
@@ -13,10 +14,11 @@ export class DragZone {
     }
 
     public hideDraggedElement(): void {
-        this.draggedElement.hidden = true;
+        console.log('hide dragged');
+        this.draggedElement.style.display = 'none';
     }
     public showDraggedElement(): void {
-        this.draggedElement.hidden = false;
+        this.draggedElement.style.display = '';
     }
 
     public getDraggedElement(): Element {
