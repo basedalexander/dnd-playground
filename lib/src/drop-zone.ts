@@ -1,6 +1,5 @@
 export class DropZone {
     
-    private containerElement: Element;
     private shadowElement: Element;
     private shadowNextSibling: Element;
 
@@ -16,13 +15,17 @@ export class DropZone {
     }
 
     showShadow(event: any, forElement: Element): void {
-        this.shadowElement = this.createShadow(forElement);
-        
-        if (this.containerElement !== event.target) {
+        this.shadowElement = this.shadowElement || this.createShadow(forElement);
+
+        if (this.containerElem !== event.target) {
             let closestChild = event.target.closest('.droppable > *');
+
+            if (closestChild === this.shadowElement) { return; }
+
             this.shadowNextSibling = this.getInsertBeforeSibling(closestChild, event);
         }
 
+        this.shadowNextSibling = null;
         this.containerElem.insertBefore(this.shadowElement, this.shadowNextSibling);
     }
 
@@ -44,15 +47,18 @@ export class DropZone {
     }
 
     drop(elem: Element): void {
-        this.containerElem.insertBefore(elem, this.shadowNextSibling);
+        let clone = <any> this.cloneElement(elem);
+        clone.style = '';
+        this.containerElem.insertBefore(clone, this.shadowNextSibling);
         this.hideShadow();
     }
 
     kill(): void {
-        console.log('dropzone kill needed implementation');
+        this.hideShadow();
+        this.containerElem = null;
     }
 
     private cloneElement(el: Element): Element {
-        return <Element> el.cloneNode();
+        return <Element> el.cloneNode(true);
     }
 }

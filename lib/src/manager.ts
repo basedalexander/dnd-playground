@@ -15,7 +15,7 @@ export class Manager {
     private dropZone: DropZone;
 
     // settings
-    private rememberLastDropShadow: boolean = true;
+    private rememberLastDropShadow: boolean = false;
 
     constructor(
         private dndService: DndService,
@@ -27,7 +27,7 @@ export class Manager {
     private addListeners(): void {
         document.addEventListener('mousedown', e => this.onMouseDown(e));
         document.addEventListener('mousemove', e => this.onMouseMove(e));
-        document.addEventListener('mouseup', e => this.onMouseUp(e));
+        document.addEventListener('mouseup', e => this.onMouseUp());
     }
 
     private findDraggableElement(element: Element): Element {
@@ -59,11 +59,11 @@ export class Manager {
         if (!this.dndService.downElem) { return; }
         if (this.isUnintendedDrag(event)) { return; }
 
-        this.startDragging(event);
+        this.startDragging();
         this.continueDragging(event);
     }
 
-    startDragging(event: MouseEvent): void {
+    startDragging(): void {
         this.dragging = true;
         this.dragZone = this.dragZoneFactory.create(this.dndService.downElem);
         this.avatar = new Avatar(this.dndService.downElem); // todo request from user
@@ -84,16 +84,19 @@ export class Manager {
         }
     }
 
+    // TODO: Complex logic, refactoring
     private onOverOutsideOfDropZone(): void {
-        this.dragZone.showDraggedElement();
-
         if (this.rememberLastDropShadow) {
+            if (!this.dropZone) {
+                this.dragZone.showDraggedElement();
+            }
             // do nothing
         } else {
             if (this.dropZone) {
                 this.dropZone.kill();
                 this.dropZone = null;
             }
+            this.dragZone.showDraggedElement();
         }
     }
 
@@ -110,16 +113,25 @@ export class Manager {
         return (xDiff <= limit) && (yDiff <= limit);
     }
 
-    private onMouseUp(event: MouseEvent) {
+    private onMouseUp() {
         if (this.dragZone) {
-            // drop
-            // remove avatar
-            // remove drag zone
-            // ...
-        } 
-        else {
-            // dragzone rollback
-            // dragavatar remove
+            if (this.dropZone) {
+                this.dropZone.drop(this.dragZone.getDraggedElement());
+                this.dropZone = null;
+
+                this.dragZone.kill();
+            } else {
+                this.dragZone.rollback();
+            }
+
+            this.dragZone = null;
+
+            this.avatar.kill();
+            this.avatar = null;
+
+            this.dragging = false;
         }
+
+        this.dndService.reset();
     }
 }

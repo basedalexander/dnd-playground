@@ -14,7 +14,6 @@ export class DragZone {
     }
 
     public hideDraggedElement(): void {
-        console.log('hide dragged');
         this.draggedElement.style.display = 'none';
     }
     public showDraggedElement(): void {
@@ -25,12 +24,18 @@ export class DragZone {
         return this.draggedElement;
     }
 
+    public kill(): void {
+        this.removeDraggedElement();
+    }
+
     public rollback(): void {
         this.showDraggedElement();
         this.showNotBeignDragged();
+        this.draggedElement = null;
     }
 
     public removeDraggedElement(): void {
         this.draggedElement.parentNode.removeChild(this.draggedElement);
+        this.draggedElement = null;
     }
 }
