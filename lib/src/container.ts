@@ -11,6 +11,7 @@ export interface IContainerSettings {
 export class Container {
     public containerElement: HTMLElement;
     public draggedElement: HTMLElement;
+    public draggedElementOld:HTMLElement;
     private shadowElement: HTMLElement;
     private shadowNextSibling: HTMLElement;
 
@@ -29,10 +30,12 @@ export class Container {
 
     // Dragged element related methods
     public getDraggedElement(): Element {
-        return this.draggedElement;
+        return this.draggedElementOld;
     }
     public setDraggedElement(element: HTMLElement): void {
         this.draggedElement = element;
+        this.draggedElementOld = this.draggedElement.cloneNode(true); // todo
+        this.draggedElementOld.style.opacity = '0.5';
     }
     public removeDraggedElement(): void {
         this.draggedElement.parentNode.removeChild(this.draggedElement);
@@ -102,6 +105,8 @@ export class Container {
     public removeShadow(): void {
         if (this.shadowElement && this.shadowElement.parentNode) {
             this.shadowElement.parentNode.removeChild(this.shadowElement);
+
+            this.shadowElement = null;
             this.shadowNextSibling = null;
         }
     }
