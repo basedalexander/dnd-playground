@@ -8,7 +8,8 @@
   },
   "scripts": {
     "postinstall": "cd lib && npm i",
-    "start": "cd lib && concurrently \"webpack\" \"cd ../ && node open\""
+    "start": "cd lib && concurrently \"webpack\" \"cd ../ && node open\"",
+    "build": "cd lib && webpack"
   },
   "repository": {
     "type": "git",
