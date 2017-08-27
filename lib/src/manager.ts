@@ -99,6 +99,7 @@ export class Manager {
             this.dragMoveOutsideContainer();
         }
     }
+
     private dragMoveInsideContainer(targetContainer: Container, event: MouseEvent): void {
         this.targetContainer = targetContainer;
         this.targetContainer.showShadow(event, this.sourceContainer);
@@ -109,6 +110,7 @@ export class Manager {
 
         if (this.targetContainer) {
             this.targetContainer.removeShadow();
+            this.targetContainer = null;
         }
     }
 
@@ -129,10 +131,16 @@ export class Manager {
             this.avatar = null;
 
             if (this.targetContainer) {
-                this.targetContainer.removeShadow();
-            }
+                let draggedElement: Element = this.sourceContainer.getDraggedElement();
+                draggedElement.style.opacity = '';
 
-            this.sourceContainer.recoverDraggedElement();
+                this.sourceContainer.removeDraggedElement();
+                this.targetContainer.drop(draggedElement);
+                this.targetContainer.removeShadow();
+                this.targetContainer = null;
+            } else {
+                this.sourceContainer.recoverDraggedElement();
+            }
         }
 
         this.dndService.reset();

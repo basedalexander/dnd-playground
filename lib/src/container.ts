@@ -59,6 +59,10 @@ export class Container {
         this.showNotBeignDragged();
     }
 
+    public drop(element: Element): void {
+        this.containerElement.insertBefore(element, this.shadowNextSibling);
+    }
+
     // Shadow related methods
     public showShadow(event: any, srcContainer: Container): void {
 
@@ -89,17 +93,15 @@ export class Container {
         }
 
         // case 4: we are over one of the draggable elements of container
-        let nextShadowSibling = getInsertBeforeSibling(draggableElement, event);
+        this.shadowNextSibling = getInsertBeforeSibling(draggableElement, event);
         srcContainer.hideDraggedElement();
 
         this.shadowElement = this.shadowElement || <HTMLElement> cloneElement(draggedElement);
-        this.containerElement.insertBefore(this.shadowElement, nextShadowSibling);
+        this.containerElement.insertBefore(this.shadowElement, this.shadowNextSibling);
     }
 
     private findDraggableElem(target: Element): Element {
-        let draggable: Element = target.closest(`[${this.containerAttribute}] > *`);
-
-        return draggable;
+        return target.closest(`[${this.containerAttribute}] > *`);
     }
 
     public removeShadow(): void {
