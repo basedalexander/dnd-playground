@@ -1,3 +1,5 @@
+let containerAttribute: string = 'dg-container'; // todo
+
 export let class2Selector = function(str: string): string {
     return `.${str}`;
 };
@@ -17,6 +19,22 @@ export let getInsertBeforeSibling = function(element: Element, event: MouseEvent
     if (event.pageY < mid) {
         return element;
     } else {
-        return <Element> element.nextSibling;
+        return <Element> element.nextElementSibling;
     }
 };
+
+export function isWithinContainer(element: Element): boolean {
+    let cssSelector: string = attribute2Selector(containerAttribute)  + ' > *';
+    let closestDraggableElement = element.closest(cssSelector);
+    return !!closestDraggableElement;
+}
+
+export function findClosestDraggableElement(element: Element): Element {
+    let cssSelector: string = attribute2Selector(containerAttribute)  + ' > *';
+    return element.closest(cssSelector);
+}
+
+export function findContainerElement(element: Element): Element {
+    let cssSelector: string = attribute2Selector(containerAttribute);
+    return element.closest(cssSelector);
+}

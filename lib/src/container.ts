@@ -57,16 +57,21 @@ export class Container {
     }
 
     // Shadow related methods
-    public showShadow(event: any, draggedElement: Element): void {
+    public showShadow(event: any, srcContainer: Container): void {
+
+        let draggedElement: Element = srcContainer.getDraggedElement();
+
         // case 1: we are over container element
         if (event.target === this.containerElement) {
             this.shadowElement = this.shadowElement || <HTMLElement> cloneElement(draggedElement);
             this.shadowNextSibling = null;
+
+            srcContainer.hideDraggedElement();
             this.containerElement.insertBefore(this.shadowElement, this.shadowNextSibling);
             return;
         }
 
-        let draggableElement: Element = event.target.closest(`[${this.containerAttribute}] > *`);
+        let draggableElement: Element = this.findDraggableElem(event.target);
 
         // case 2: we are over active shadow element
         if (draggableElement === this.shadowElement) {
@@ -75,13 +80,23 @@ export class Container {
 
         // case 3: we are over dragged element
         if (draggableElement === draggedElement) {
+            srcContainer.showDraggedElement();
             this.removeShadow();
             return;
         }
 
         // case 4: we are over one of the draggable elements of container
         let nextShadowSibling = getInsertBeforeSibling(draggableElement, event);
+        srcContainer.hideDraggedElement();
+
+        this.shadowElement = this.shadowElement || <HTMLElement> cloneElement(draggedElement);
         this.containerElement.insertBefore(this.shadowElement, nextShadowSibling);
+    }
+
+    private findDraggableElem(target: Element): Element {
+        let draggable: Element = target.closest(`[${this.containerAttribute}] > *`);
+
+        return draggable;
     }
 
     public removeShadow(): void {
