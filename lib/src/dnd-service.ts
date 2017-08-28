@@ -1,10 +1,10 @@
 export class DndService {
-    public downElem: Element;
+    public downElem: HTMLElement;
     public downX: number;
     public downY: number;
 
     public rememberDown(ev: MouseEvent): void {
-        this.downElem = <Element> ev.target;
+        this.downElem = <HTMLElement> ev.target;
         this.downX = ev.pageX;
         this.downY = ev.pageY;
     }

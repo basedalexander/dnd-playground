@@ -5,7 +5,7 @@ export class Avatar {
 
     private elem: HTMLElement;
 
-    constructor(elem: Element) {
+    constructor(elem: HTMLElement) {
         this.elem = <HTMLElement>elem.cloneNode(true);
         this.init();
     }
@@ -18,7 +18,7 @@ export class Avatar {
     }
 
     public move(x: number, y: number): void {
-        this.elem.style.left = x + 'px';;
+        this.elem.style.left = x + 'px';
         this.elem.style.top = y + 'px';
 
         this.posX = x;
