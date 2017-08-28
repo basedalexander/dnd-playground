@@ -71,7 +71,7 @@ export class Container {
 
         if (event.target === this.containerElement) {
             // case 1: we are over container element.
-            this.shadowNextSibling = null;
+            this.shadowNextSibling = this.findClosestShadowNextSibling(event);
             return this.insertShadow(draggedElement);
         }
 
@@ -85,6 +85,29 @@ export class Container {
         // case 3: we are over a draggable element.
         this.shadowNextSibling = getNextElementSibling(draggableElement, event);
         return this.insertShadow(draggedElement);
+    }
+
+    private findClosestShadowNextSibling(event: MouseEvent): HTMLElement {
+        let startingYCoordinate: number = event.pageY;
+
+        let shadowNextSibling: HTMLElement = null;
+
+        while (true) {
+            let element = <HTMLElement> document.elementFromPoint(event.pageX, startingYCoordinate);
+
+            if (element === this.containerElement) {
+                startingYCoordinate++;
+                continue;
+            }
+
+            if (this.containerElement.contains(element)) {
+                shadowNextSibling = element;
+            }
+
+            break;
+        }
+
+        return shadowNextSibling;
     }
 
     private insertShadow(draggedElement: HTMLElement): Promise<void> {
