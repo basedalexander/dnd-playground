@@ -1,4 +1,4 @@
-import { attribute2Selector, findClosestDraggableElement, findContainerElement, isWithinContainer } from './utils';
+import * as utils from './utils';
 import { MOUSE_LEFT_CODE } from './constants';
 import { DndService } from "./dnd-service";
 import { Avatar } from "./avatar";
@@ -10,7 +10,7 @@ export class Manager {
     private dragData: any;
     private sourceContainer: Container;
     private targetContainer: Container;
-    private containers: Map<Element, Container> = new Map();
+    private containers: Map<HTMLElement, Container> = new Map();
     private containerAttribute: string = 'dg-container';
 
     constructor(private dndService: DndService) {
@@ -42,9 +42,9 @@ export class Manager {
         document.addEventListener('mouseup', e => this.onMouseUp());
     }
 
-    private findContainerByChildElement(element: Element): Container {
-        let cssSelector: string = attribute2Selector(this.containerAttribute);
-        let containerElement = element.closest(cssSelector);
+    private findContainerByChildElement(element: HTMLElement): Container {
+        let cssSelector: string = utils.attribute2Selector(this.containerAttribute);
+        let containerElement = <HTMLElement> element.closest(cssSelector);
 
         return this.containers.get(containerElement);
     }
@@ -59,21 +59,44 @@ export class Manager {
         if (this.dragging) {
             event.preventDefault();
 
-            this.continueDragging(event);
+            this.drag(event);
             return;
         }
 
         if (!this.isMouseDown()) { return; }
         if (this.isUnintendedDrag(event)) { return; }
 
-        let withinContainer: boolean = isWithinContainer(this.dndService.downElem);
+        let withinContainer: boolean = this.isWithinContainer(this.dndService.downElem);
 
         if (withinContainer) {
             event.preventDefault();
 
             this.startDragging();
-            this.continueDragging(event);
+            this.drag(event);
         }
+    }
+
+    private onMouseUp() {
+        if (this.dragging) {
+            this.dragging = false;
+
+            this.avatar.kill();
+            this.avatar = null;
+
+            if (this.targetContainer) {
+                let draggedElement: HTMLElement = this.sourceContainer.getDraggedElement();
+                draggedElement.style.opacity = '';
+
+                this.sourceContainer.removeDraggedElement();
+                this.targetContainer.drop(draggedElement);
+                this.targetContainer.removeShadow();
+                this.targetContainer = null;
+            } else {
+                this.sourceContainer.resetDraggedElement();
+            }
+        }
+
+        this.dndService.reset();
     }
 
     private startDragging(): void {
@@ -81,7 +104,7 @@ export class Manager {
 
         // find container in which dragging occurs
         this.sourceContainer = this.findContainerByChildElement(this.dndService.downElem);
-        let draggedElement = <HTMLElement> findClosestDraggableElement(this.dndService.downElem);
+        let draggedElement = <HTMLElement> this.findClosestDraggableElement(this.dndService.downElem);
         this.sourceContainer.setDraggedElement(draggedElement);
         this.sourceContainer.showBeingDragged();
 
@@ -89,9 +112,9 @@ export class Manager {
         this.dragData = {}; // todo request from user
     }
 
-    private continueDragging(event: MouseEvent): void {
+    private drag(event: MouseEvent): void {
         this.avatar.move(event.pageX, event.pageY);
-        let targetContainer: Container = this.findContainerByChildElement(<Element>event.target);
+        let targetContainer: Container = this.findContainerByChildElement(<HTMLElement>event.target);
         
         if (targetContainer) {
             this.dragMoveInsideContainer(targetContainer, event);
@@ -102,7 +125,10 @@ export class Manager {
 
     private dragMoveInsideContainer(targetContainer: Container, event: MouseEvent): void {
         this.targetContainer = targetContainer;
-        this.targetContainer.showShadow(event, this.sourceContainer);
+        this.targetContainer.showShadow(event, this.sourceContainer.getDraggedElement())
+            .then(() => {
+                this.sourceContainer.hideDraggedElement();
+            })
     }
 
     private dragMoveOutsideContainer(): void {
@@ -123,30 +149,16 @@ export class Manager {
         return (xDiff <= limit) && (yDiff <= limit);
     }
 
-    private onMouseUp() {
-        if (this.dragging) {
-            this.dragging = false;
-
-            this.avatar.kill();
-            this.avatar = null;
-
-            if (this.targetContainer) {
-                let draggedElement: Element = this.sourceContainer.getDraggedElement();
-                draggedElement.style.opacity = '';
-
-                this.sourceContainer.removeDraggedElement();
-                this.targetContainer.drop(draggedElement);
-                this.targetContainer.removeShadow();
-                this.targetContainer = null;
-            } else {
-                this.sourceContainer.recoverDraggedElement();
-            }
-        }
-
-        this.dndService.reset();
-    }
-
     private isMouseDown(): boolean {
         return !!this.dndService.downElem;
+    }
+
+    private isWithinContainer(element: HTMLElement): boolean {
+        return !!this.findClosestDraggableElement(element);
+    }
+
+    private findClosestDraggableElement(element: HTMLElement): HTMLElement {
+        let cssSelector: string = utils.attribute2Selector(this.containerAttribute)  + ' > *';
+        return <HTMLElement> element.closest(cssSelector);
     }
 }
