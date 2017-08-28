@@ -7,6 +7,4 @@ let manager = new Manager(
     dndService
 );
 
-
-manager.registerContainer(document.getElementById('container1'));
-manager.registerContainer(document.getElementById('container2'));
+window.dragarys = manager;
