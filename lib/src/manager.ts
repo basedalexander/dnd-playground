@@ -84,10 +84,9 @@ export class Manager {
             this.avatar = null;
 
             if (this.targetContainer) {
-                let draggedElement: HTMLElement = this.sourceContainer.getDraggedElement();
-                draggedElement.style.opacity = '';
+                this.sourceContainer.resetDraggedElement();
+                let draggedElement: HTMLElement = this.sourceContainer.getOriginalDraggedElement();
 
-                this.sourceContainer.removeDraggedElement();
                 this.targetContainer.drop(draggedElement);
                 this.targetContainer.removeShadow();
                 this.targetContainer = null;
@@ -124,6 +123,10 @@ export class Manager {
     }
 
     private dragMoveInsideContainer(targetContainer: Container, event: MouseEvent): void {
+        if (this.targetContainer && this.targetContainer !== targetContainer) {
+            this.targetContainer.removeShadow();
+        }
+
         this.targetContainer = targetContainer;
         this.targetContainer.showShadow(event, this.sourceContainer.getDraggedElement())
             .then(() => {
