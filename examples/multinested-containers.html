@@ -53,6 +53,10 @@
         dragarys.registerContainer(document.getElementById('container2'));
         dragarys.registerContainer(document.getElementById('container1-1'));
         dragarys.registerContainer(document.getElementById('container1-1-1'));
+
+        dragarys.on('dragstart', (data) => console.log(data));
+        dragarys.on('dragmove', (data) => console.log(data));
+        dragarys.on('drop', (data) => console.log(data));
     </script>
 </body>
 </html>
