@@ -32,6 +32,7 @@ export class Container {
     public setDraggedElement(element: HTMLElement): void {
         this.draggedElement = element;
         this.draggedElementOld = cloneElement(this.draggedElement);
+        this.draggedElementOld.removeAttribute(this.containerAttribute);
 
         this.styleAsBeingDragged(this.draggedElementOld);
     }
