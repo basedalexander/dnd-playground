@@ -22,6 +22,9 @@ export class Container {
         this.assignContainerAttribute(this.containerElement);
     }
 
+    public getOriginalDraggedElement(): HTMLElement {
+        return this.draggedElement;
+    }
     // Dragged element related methods
     public getDraggedElement(): HTMLElement {
         return this.draggedElementOld;

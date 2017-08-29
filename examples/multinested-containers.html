@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="multinested-containers.css">
+</head>
+<body>
+    <section class='section clearfix rounded'>
+        <p>Move elements between containers and sort them within one of the containers</p>
+
+        <div class="side-left column rounded">
+            <section id="container1" class="container1">
+                <div class="container-content-item">container content 1</div>
+                <div class="container-content-item">container content 2</div>
+                <div class="container-content-item">container content 3</div>
+                <div class="container-content-item">container content 4</div>
+                <div class="container-content-item">container content 5</div>
+
+                <section id="container1-1" class="container1-1">
+                    <div class="container-content-item">container content 17</div>
+                    <div class="container-content-item">container content 27</div>
+                    <div class="container-content-item">container content 27sd</div>
+                    <section id="container1-1-1" class="container2">
+                        <div class="container-content-item">container content 16</div>
+                        <div class="container-content-item">container content 26</div>
+                        <div class="container-content-item">container content 36</div>
+                        <div class="container-content-item">container content 46</div>
+                        <div class="container-content-item">container content 56</div>
+                    </section>
+
+                </section>
+            </section>
+        </div>
+
+        <div class="side-right column rounded">
+            <section id="container2" class="container2">
+                <div class="container-content-item">container content 16</div>
+                <div class="container-content-item">container content 26</div>
+                <div class="container-content-item">container content 36</div>
+                <div class="container-content-item">container content 46</div>
+                <div class="container-content-item">container content 56</div>
+            </section>
+        </div>
+    </section>
+
+    <script src='../lib/dist/bundle.js'></script>
+
+    <script>
+        dragarys.registerContainer(document.getElementById('container1'));
+        dragarys.registerContainer(document.getElementById('container2'));
+        dragarys.registerContainer(document.getElementById('container1-1'));
+        dragarys.registerContainer(document.getElementById('container1-1-1'));
+    </script>
+</body>
+</html>
