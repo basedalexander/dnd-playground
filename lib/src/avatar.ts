@@ -12,6 +12,8 @@ export class Avatar {
 
     private init(): void {
         document.body.appendChild(this.elem);
+
+        delete this.elem.id;
         this.elem.style.zIndex = '9999';
         this.elem.style.position = 'absolute';
         this.elem.style.pointerEvents = 'none';
