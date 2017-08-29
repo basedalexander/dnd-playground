@@ -3,8 +3,10 @@ import { MOUSE_LEFT_CODE } from './constants';
 import { DndService } from "./dnd-service";
 import { Avatar } from "./avatar";
 import { Container, IContainerSettings } from './container';
+import { IEventEmitter } from './event-emitter/event-emitter.interface';
+import { EventEmitter } from './event-emitter/event-emitter';
 
-export class Manager {
+export class Manager extends EventEmitter {
     private dragging: boolean = false;
     private avatar: Avatar;
     private dragData: any;
@@ -13,7 +15,10 @@ export class Manager {
     private containers: Map<HTMLElement, Container> = new Map();
     private containerAttribute: string = 'dg-container';
 
-    constructor(private dndService: DndService) {
+    constructor(
+        private dndService: DndService
+    ) {
+        super();
         this.addListeners();
     }
 
@@ -84,6 +89,7 @@ export class Manager {
             this.avatar = null;
 
             if (this.targetContainer) {
+                this.emit('drop', { data: 'drop' });
                 this.sourceContainer.resetDraggedElement();
                 let draggedElement: HTMLElement = this.sourceContainer.getOriginalDraggedElement();
 
@@ -99,6 +105,8 @@ export class Manager {
     }
 
     private startDragging(): void {
+        this.emit('dragstart', { data: 'dragstart'});
+
         this.dragging = true;
 
         // find container in which dragging occurs
@@ -112,6 +120,8 @@ export class Manager {
     }
 
     private drag(event: MouseEvent): void {
+        this.emit('dragmove', { data: 'dragmove' });
+
         this.avatar.move(event.pageX, event.pageY);
         let targetContainer: Container = this.findContainerByChildElement(<HTMLElement>event.target);
         
@@ -164,4 +174,6 @@ export class Manager {
         let cssSelector: string = utils.attribute2Selector(this.containerAttribute)  + ' > *';
         return <HTMLElement> element.closest(cssSelector);
     }
+
+
 }
