@@ -115,7 +115,6 @@ export class Manager extends EventEmitter {
 
         const canceled: boolean = !draggedElement.dispatchEvent(startDragEvent);
         if (canceled) {
-            console.log('canceled!!!!');
             this.dndService.reset();
             return;
         }
@@ -135,8 +134,6 @@ export class Manager extends EventEmitter {
     }
 
     private drag(event: MouseEvent): void {
-        this.emit('dragmove', { data: 'dragmove' });
-
         this.avatarService.move(event.pageX, event.pageY);
 
         let targetContainer: Container = this.findContainerByChildElement(<HTMLElement>event.target);
