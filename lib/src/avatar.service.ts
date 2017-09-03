@@ -1,22 +1,27 @@
-export class Avatar {
+export class AvatarService {
 
     public posX: number;
     public posY: number;
 
     private elem: HTMLElement;
 
-    constructor(elem: HTMLElement) {
-        this.elem = <HTMLElement>elem.cloneNode(true);
-        this.init();
-    }
+    public setElement(element: HTMLElement): void {
+        if (this.elem) {
+            this.reset();
+        }
 
-    private init(): void {
+        this.elem = <HTMLElement>element.cloneNode(true);
+
         document.body.appendChild(this.elem);
 
         delete this.elem.id;
         this.elem.style.zIndex = '9999';
         this.elem.style.position = 'absolute';
         this.elem.style.pointerEvents = 'none';
+    }
+
+    public get active(): boolean {
+        return !!this.elem;
     }
 
     public move(x: number, y: number): void {
@@ -35,7 +40,10 @@ export class Avatar {
         this.elem.hidden = false;
     }
 
-    public kill(): void {
+    public reset(): void {
         this.elem.parentNode.removeChild(this.elem);
+        this.elem = null;
     }
 }
+
+export let avatarService: AvatarService = new AvatarService();
