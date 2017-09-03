@@ -1,22 +1,24 @@
 import * as utils from './utils';
 import { MOUSE_LEFT_CODE } from './constants';
 import { DndService } from "./dnd-service";
-import { Avatar } from "./avatar";
+import { AvatarService } from "./avatar.service";
 import { Container, IContainerSettings } from './container';
-import { IEventEmitter } from './event-emitter/event-emitter.interface';
 import { EventEmitter } from './event-emitter/event-emitter';
+import { DragStartEvent } from './events/drag-start-event';
+import { DragDataService } from './drag-data.service';
+import { DropEvent } from './events/drop-event';
 
 export class Manager extends EventEmitter {
     private dragging: boolean = false;
-    private avatar: Avatar;
-    private dragData: any;
     private sourceContainer: Container;
     private targetContainer: Container;
     private containers: Map<HTMLElement, Container> = new Map();
     private containerAttribute: string = 'dg-container';
 
     constructor(
-        private dndService: DndService
+        private dndService: DndService,
+        private avatarService: AvatarService,
+        private dragDataService: DragDataService
     ) {
         super();
         this.addListeners();
@@ -54,9 +56,9 @@ export class Manager extends EventEmitter {
         return this.containers.get(containerElement);
     }
 
-    private onMouseDown(ev: MouseEvent) {
-        if (ev.which === MOUSE_LEFT_CODE) {
-            this.dndService.rememberDown(ev);
+    private onMouseDown(event: MouseEvent) {
+        if (event.which === MOUSE_LEFT_CODE) {
+            this.dndService.rememberDown(event);
         }
     }
 
@@ -76,8 +78,7 @@ export class Manager extends EventEmitter {
         if (withinContainer) {
             event.preventDefault();
 
-            this.startDragging();
-            this.drag(event);
+            this.startDragging(event);
         }
     }
 
@@ -85,11 +86,14 @@ export class Manager extends EventEmitter {
         if (this.dragging) {
             this.dragging = false;
 
-            this.avatar.kill();
-            this.avatar = null;
+            this.avatarService.reset();
 
             if (this.targetContainer) {
-                this.emit('drop', { data: 'drop' });
+                let dropEvent: DropEvent = new DropEvent();
+                this.targetContainer.containerElement.dispatchEvent(dropEvent);
+
+                this.dragDataService.reset();
+
                 this.sourceContainer.resetDraggedElement();
                 let draggedElement: HTMLElement = this.sourceContainer.getOriginalDraggedElement();
 
@@ -104,27 +108,38 @@ export class Manager extends EventEmitter {
         this.dndService.reset();
     }
 
-    private startDragging(): void {
-        this.emit('dragstart', { data: 'dragstart'});
+    private startDragging(event: MouseEvent): void {
+        let draggedElement = <HTMLElement> this.findClosestDraggableElement(this.dndService.downElem);
+
+        let startDragEvent: Event = new DragStartEvent();
+
+        const canceled: boolean = !draggedElement.dispatchEvent(startDragEvent);
+        if (canceled) {
+            console.log('canceled!!!!');
+            this.dndService.reset();
+            return;
+        }
 
         this.dragging = true;
 
         // find container in which dragging occurs
         this.sourceContainer = this.findContainerByChildElement(this.dndService.downElem);
-        let draggedElement = <HTMLElement> this.findClosestDraggableElement(this.dndService.downElem);
         this.sourceContainer.setDraggedElement(draggedElement);
         this.sourceContainer.showBeingDragged();
 
-        this.avatar = new Avatar(this.dndService.downElem); // todo request from user
-        this.dragData = {}; // todo request from user
+        if (!this.avatarService.active) {
+            this.avatarService.setElement(this.dndService.downElem);// todo request from user
+        }
+
+        this.drag(event);
     }
 
     private drag(event: MouseEvent): void {
         this.emit('dragmove', { data: 'dragmove' });
 
-        this.avatar.move(event.pageX, event.pageY);
+        this.avatarService.move(event.pageX, event.pageY);
+
         let targetContainer: Container = this.findContainerByChildElement(<HTMLElement>event.target);
-        
         if (targetContainer) {
             this.dragMoveInsideContainer(targetContainer, event);
         } else {
@@ -174,6 +189,4 @@ export class Manager extends EventEmitter {
         let cssSelector: string = utils.attribute2Selector(this.containerAttribute)  + ' > *';
         return <HTMLElement> element.closest(cssSelector);
     }
-
-
 }
