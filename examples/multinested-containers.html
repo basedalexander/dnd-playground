@@ -53,19 +53,6 @@
         dragarys.registerContainer(document.getElementById('container2'));
         dragarys.registerContainer(document.getElementById('container1-1'));
         dragarys.registerContainer(document.getElementById('container1-1-1'));
-
-        dragarys.on('dragstart', (data) => console.log(data));
-        dragarys.on('dragmove', (data) => console.log(data));
-        dragarys.on('drop', (data) => console.log(data));
-
-        document.addEventListener('dr-dragstart', (event) => {
-            let image = new Image();
-            image.src = 'http://orig03.deviantart.net/eaf2/f/2014/355/a/c/3d_sonic_ico_by_kitsune_fusion_by_emadahmad12345-d8amobc.png';
-            event.setAvatarElement(image);
-
-            event.setDragData({ type: 'suckdick', pluginDescriptor: 'fish'});
-        });
-
     </script>
 </body>
 </html>
