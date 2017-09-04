@@ -20,7 +20,7 @@ export class BaseDragEvent extends Event {
         this.dragDataService.setData(data);
     }
     public getDragData(): any {
-        this.dragDataService.getData();
+        return this.dragDataService.getData();
     }
 
     public setAvatarElement(element: HTMLElement): void {

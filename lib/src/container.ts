@@ -12,8 +12,9 @@ export class Container {
     public containerElement: HTMLElement;
     public draggedElement: HTMLElement;
     public draggedElementOld:HTMLElement;
+    public shadowNextSibling: HTMLElement;
+
     private shadowElement: HTMLElement;
-    private shadowNextSibling: HTMLElement;
     private containerAttribute: string;
 
     constructor(element: HTMLElement, settings?: IContainerSettings) {
