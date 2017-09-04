@@ -7,6 +7,8 @@ import { EventEmitter } from './event-emitter/event-emitter';
 import { DragStartEvent } from './events/drag-start-event';
 import { DragDataService } from './drag-data.service';
 import { DropEvent } from './events/drop-event';
+import { DragLeaveEvent } from './events/drag-leave-event';
+import { DragOverEvent } from './events/drag-over-event';
 
 export class Manager extends EventEmitter {
     private dragging: boolean = false;
@@ -47,6 +49,7 @@ export class Manager extends EventEmitter {
         document.addEventListener('mousedown', e => this.onMouseDown(e));
         document.addEventListener('mousemove', e => this.onMouseMove(e));
         document.addEventListener('mouseup', e => this.onMouseUp());
+        document.addEventListener('mouseout', e => this.onMouseLeave(e));
     }
 
     private findContainerByChildElement(element: HTMLElement): Container {
@@ -82,6 +85,13 @@ export class Manager extends EventEmitter {
         }
     }
 
+    private onMouseLeave(event: Event): void {
+        if (this.dragging) {
+            let leaveEvent: DragLeaveEvent = new DragLeaveEvent();
+            event.target.dispatchEvent(leaveEvent);
+        }
+    }
+
     private onMouseUp() {
         if (this.dragging) {
             this.dragging = false;
@@ -89,15 +99,21 @@ export class Manager extends EventEmitter {
             this.avatarService.reset();
 
             if (this.targetContainer) {
-                let dropEvent: DropEvent = new DropEvent();
-                this.targetContainer.containerElement.dispatchEvent(dropEvent);
 
-                this.dragDataService.reset();
+                let dropEvent: DropEvent = new DropEvent();
+                dropEvent.targetElement = this.targetContainer.containerElement;
+                dropEvent.beforeElement = this.targetContainer.shadowNextSibling;
+
+                const canceled: boolean = !this.targetContainer.containerElement.dispatchEvent(dropEvent);
 
                 this.sourceContainer.resetDraggedElement();
-                let draggedElement: HTMLElement = this.sourceContainer.getOriginalDraggedElement();
 
-                this.targetContainer.drop(draggedElement);
+                if (!canceled) {
+                    let draggedElement: HTMLElement = this.sourceContainer.getOriginalDraggedElement();
+                    this.targetContainer.drop(draggedElement);
+                }
+
+                this.dragDataService.reset();
                 this.targetContainer.removeShadow();
                 this.targetContainer = null;
             } else {
@@ -115,7 +131,6 @@ export class Manager extends EventEmitter {
 
         const canceled: boolean = !draggedElement.dispatchEvent(startDragEvent);
         if (canceled) {
-            console.log('canceled!!!!');
             this.dndService.reset();
             return;
         }
@@ -135,9 +150,10 @@ export class Manager extends EventEmitter {
     }
 
     private drag(event: MouseEvent): void {
-        this.emit('dragmove', { data: 'dragmove' });
-
         this.avatarService.move(event.pageX, event.pageY);
+
+        let dragOverEvent: DragOverEvent = new DragOverEvent();
+        event.target.dispatchEvent(dragOverEvent);
 
         let targetContainer: Container = this.findContainerByChildElement(<HTMLElement>event.target);
         if (targetContainer) {
